@@ -1,0 +1,11 @@
+{
+  "name": "cursor-leaderboard",
+  "private": true,
+  "version": "0.1.0",
+  "description": "Open-source, opt-in usage leaderboard for Cursor public profiles.",
+  "workspaces": ["apps/*"],
+  "scripts": {
+    "dev:api": "pnpm --filter @cl/api start:dev",
+    "dev:web": "pnpm --filter @cl/web dev"
+  }
+}
