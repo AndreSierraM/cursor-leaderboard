@@ -1,5 +1,7 @@
 # Cursor Leaderboard
 
+**Live:** https://cursorrank.vercel.app
+
 Open-source, **opt-in** usage ranking for [Cursor](https://cursor.com) public
 profiles. Add your handle in the UI; the backend fetches your public profile
 stats and ranks you against everyone else who joined.
