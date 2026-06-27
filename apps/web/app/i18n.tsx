@@ -14,9 +14,6 @@ const dict = {
   en: {
     nav_github: 'GitHub',
     footer_tagline: 'Built in the open, by builders for builders.',
-    footer_badge_open: 'Open source',
-    footer_badge_optin: 'Opt-in only',
-    footer_badge_public: 'Public profiles',
     footer_cursor: 'Cursor',
     footer_source: 'Source',
     hero_eyebrow: 'Open source · Opt-in',
@@ -56,9 +53,6 @@ const dict = {
   es: {
     nav_github: 'GitHub',
     footer_tagline: 'Hecho en abierto, por y para quienes construyen con Cursor.',
-    footer_badge_open: 'Código abierto',
-    footer_badge_optin: 'Tú eliges entrar',
-    footer_badge_public: 'Solo perfiles públicos',
     footer_cursor: 'Cursor',
     footer_source: 'Código',
     hero_eyebrow: 'Código abierto · Opcional',

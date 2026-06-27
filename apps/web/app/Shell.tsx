@@ -74,14 +74,7 @@ export default function Shell({ children }: { children: React.ReactNode }) {
         <div className="container footer-inner">
           <div className="footer-brand">
             <CursorLogo />
-            <div className="footer-copy">
-              <p className="footer-tagline">{t('footer_tagline')}</p>
-              <ul className="footer-badges">
-                <li>{t('footer_badge_open')}</li>
-                <li>{t('footer_badge_optin')}</li>
-                <li>{t('footer_badge_public')}</li>
-              </ul>
-            </div>
+            <p className="footer-tagline">{t('footer_tagline')}</p>
           </div>
           <div className="footer-links">
             <a href="https://cursor.com" target="_blank" rel="noreferrer">

@@ -852,7 +852,7 @@ a {
 
 .footer-brand {
   display: flex;
-  align-items: flex-start;
+  align-items: center;
   gap: 14px;
   max-width: 520px;
 }
@@ -860,14 +860,8 @@ a {
 .footer-brand .logo-mark {
   width: 20px;
   height: 20px;
-  margin-top: 3px;
+  flex-shrink: 0;
   opacity: 0.7;
-}
-
-.footer-copy {
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
 }
 
 .footer-tagline {
@@ -876,33 +870,6 @@ a {
   font-size: 15px;
   line-height: 1.45;
   letter-spacing: -0.02em;
-}
-
-.footer-badges {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 8px;
-  margin: 0;
-  padding: 0;
-  list-style: none;
-}
-
-.footer-badges li {
-  padding: 4px 11px;
-  border-radius: var(--radius-pill);
-  border: 1px solid var(--hairline);
-  background: var(--card);
-  color: var(--muted);
-  font-size: 11px;
-  font-weight: 500;
-  letter-spacing: 0.03em;
-  text-transform: uppercase;
-}
-
-.footer-badges li:first-child {
-  border-color: rgba(245, 78, 0, 0.2);
-  color: var(--primary);
-  background: rgba(245, 78, 0, 0.04);
 }
 
 .footer-links {
