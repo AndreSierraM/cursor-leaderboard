@@ -17,7 +17,7 @@ const jetbrains = JetBrains_Mono({
 
 export const metadata = {
   title: 'Cursor Leaderboard',
-  description: 'Open-source, opt-in usage ranking for Cursor public profiles.',
+  description: 'Open-source usage ranking for Cursor public profiles.',
 };
 
 export default function RootLayout({

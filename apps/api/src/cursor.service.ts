@@ -27,21 +27,26 @@ export class CursorService {
   async fetchProfile(handle: string): Promise<ProfileStats> {
     const clean = handle.trim().replace(/^@/, '');
     if (!/^[a-zA-Z0-9_-]{1,40}$/.test(clean)) {
-      throw new BadRequestException('Invalid handle');
+      throw new BadRequestException('invalid_handle');
     }
 
-    const res = await fetch(CURSOR_ENDPOINT, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ handle: clean }),
-    });
+    let res: Response;
+    try {
+      res = await fetch(CURSOR_ENDPOINT, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ handle: clean }),
+      });
+    } catch {
+      throw new BadRequestException('cursor_unavailable');
+    }
 
     if (!res.ok) {
-      throw new BadRequestException(`Cursor responded ${res.status}`);
+      throw new BadRequestException('cursor_unavailable');
     }
     const data = (await res.json()) as any;
     if (data?.error || !data?.profile || !data?.activitySummary) {
-      throw new NotFoundException('Profile not found or not public');
+      throw new NotFoundException('profile_unavailable');
     }
     return parseProfile(clean, data);
   }

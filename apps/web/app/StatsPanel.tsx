@@ -3,6 +3,7 @@
 import { useT, type TKey } from './i18n';
 import {
   aggregate,
+  fmtCompact,
   metricValue,
   modelBreakdown,
   modelPillClass,
@@ -10,17 +11,6 @@ import {
   type Row,
 } from './stats';
 import type { SortKey } from './types';
-
-function fmt(n: number): string {
-  const units = ['', 'K', 'M', 'B', 'T'];
-  let i = 0;
-  let v = n;
-  while (Math.abs(v) >= 1000 && i < units.length - 1) {
-    v /= 1000;
-    i++;
-  }
-  return i === 0 ? String(n) : `${v.toFixed(1)}${units[i]}`;
-}
 
 const METRIC_LABEL: Record<SortKey, TKey> = {
   tokens: 'sort_tokens',
@@ -53,15 +43,15 @@ export default function StatsPanel({
         </div>
         <div className="stat-card">
           <span className="stat-label">{t('stat_tokens')}</span>
-          <span className="stat-value">{fmt(stats.tokens)}</span>
+          <span className="stat-value">{fmtCompact(stats.tokens)}</span>
         </div>
         <div className="stat-card">
           <span className="stat-label">{t('stat_agents')}</span>
-          <span className="stat-value">{fmt(stats.agents)}</span>
+          <span className="stat-value">{fmtCompact(stats.agents)}</span>
         </div>
         <div className="stat-card">
-          <span className="stat-label">{t('stat_avg_streak')}</span>
-          <span className="stat-value">{stats.avgStreak}d</span>
+          <span className="stat-label">{t('pulse_new')}</span>
+          <span className="stat-value">+{stats.joinedLast7d}</span>
         </div>
       </div>
 
@@ -82,7 +72,7 @@ export default function StatsPanel({
                   <div className="bar-track" aria-hidden>
                     <div className="bar-fill" style={{ width: `${pct}%` }} />
                   </div>
-                  <span className="bar-value">{fmt(v)}</span>
+                  <span className="bar-value">{fmtCompact(v)}</span>
                 </li>
               );
             })}

@@ -2,6 +2,7 @@ import { Body, Controller, Get, Headers, Post, Query } from '@nestjs/common';
 import { CursorService } from './cursor.service';
 import {
   allHandles,
+  getProfileRanks,
   initSchema,
   listRanking,
   upsertProfile,
@@ -21,11 +22,26 @@ export class ProfilesController {
 
   /** User submits their handle via the UI; we validate + fetch + store. */
   @Post('handles')
-  async add(@Body('handle') handle: string) {
+  async add(@Body() body: { handle: string; anonymous?: boolean }) {
     await ensureSchema();
-    const stats = await this.cursor.fetchProfile(handle);
-    await upsertProfile(stats);
-    return stats;
+    const stats = await this.cursor.fetchProfile(body.handle);
+    const anonymous = body.anonymous ?? false;
+    await upsertProfile(stats, anonymous);
+    const ranks = await getProfileRanks(stats.handle);
+    return { ...stats, anonymous, ranks: ranks?.ranks ?? null };
+  }
+
+  @Get('rank')
+  async rank(@Query('handle') handle?: string) {
+    await ensureSchema();
+    if (!handle?.trim()) {
+      return { found: false };
+    }
+    const result = await getProfileRanks(handle);
+    if (!result) {
+      return { found: false };
+    }
+    return { found: true, ...result };
   }
 
   @Get('ranking')

@@ -9,5 +9,7 @@ create table if not exists profiles (
   longest_streak int not null default 0,
   longest_agent_seconds int not null default 0,
   top_models jsonb not null default '[]',
-  updated_at timestamptz not null default now()
+  joined_at timestamptz not null default now(),
+  updated_at timestamptz not null default now(),
+  is_anonymous boolean not null default false
 );

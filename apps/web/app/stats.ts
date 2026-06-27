@@ -10,7 +10,48 @@ export type Row = {
   longestStreak: number;
   longestAgentSeconds: number;
   topModels: { name: string; agentRequests: number }[];
+  joinedAt?: string;
+  isAnonymous?: boolean;
 };
+
+export function isAnonymous(row: Row): boolean {
+  return row.isAnonymous === true;
+}
+
+export function publicName(row: Row, anonymousLabel: string): string {
+  if (isAnonymous(row)) return anonymousLabel;
+  return row.displayName ?? row.handle;
+}
+
+export function normalizeHandle(handle: string): string {
+  return handle.trim().toLowerCase().replace(/^@/, '');
+}
+
+export function findRank(
+  rows: Row[],
+  handle: string,
+  sort: SortKey,
+): number | null {
+  const clean = normalizeHandle(handle);
+  const sorted = sortRows(rows, sort);
+  const idx = sorted.findIndex(
+    (r) => normalizeHandle(r.handle) === clean,
+  );
+  return idx >= 0 ? idx + 1 : null;
+}
+
+export function findAllRanks(
+  rows: Row[],
+  handle: string,
+): Partial<Record<SortKey, number>> {
+  const sorts: SortKey[] = ['tokens', 'agents', 'streak', 'longest_streak'];
+  const out: Partial<Record<SortKey, number>> = {};
+  for (const s of sorts) {
+    const rank = findRank(rows, handle, s);
+    if (rank != null) out[s] = rank;
+  }
+  return out;
+}
 
 export function metricValue(row: Row, sort: SortKey): number {
   switch (sort) {
@@ -31,19 +72,53 @@ export function metricValue(row: Row, sort: SortKey): number {
 
 export function aggregate(rows: Row[]) {
   if (rows.length === 0) {
-    return { users: 0, tokens: 0, agents: 0, avgStreak: 0, maxStreak: 0 };
+    return {
+      users: 0,
+      tokens: 0,
+      agents: 0,
+      avgStreak: 0,
+      maxStreak: 0,
+      joinedLast7d: 0,
+    };
   }
   const tokens = rows.reduce((s, r) => s + r.tokens, 0);
   const agents = rows.reduce((s, r) => s + r.agents, 0);
   const streakSum = rows.reduce((s, r) => s + r.currentStreak, 0);
   const maxStreak = Math.max(...rows.map((r) => r.longestStreak));
+  const weekAgo = Date.now() - 7 * 24 * 60 * 60 * 1000;
+  const joinedLast7d = rows.filter((r) => {
+    if (!r.joinedAt) return false;
+    return new Date(r.joinedAt).getTime() >= weekAgo;
+  }).length;
   return {
     users: rows.length,
     tokens,
     agents,
     avgStreak: Math.round(streakSum / rows.length),
     maxStreak,
+    joinedLast7d,
   };
+}
+
+export function recentJoiners(rows: Row[], limit = 5): Row[] {
+  return [...rows]
+    .filter((r) => r.joinedAt)
+    .sort(
+      (a, b) =>
+        new Date(b.joinedAt!).getTime() - new Date(a.joinedAt!).getTime(),
+    )
+    .slice(0, limit);
+}
+
+export function fmtCompact(n: number): string {
+  const units = ['', 'K', 'M', 'B', 'T'];
+  let i = 0;
+  let v = n;
+  while (Math.abs(v) >= 1000 && i < units.length - 1) {
+    v /= 1000;
+    i++;
+  }
+  return i === 0 ? String(n) : `${v.toFixed(1)}${units[i]}`;
 }
 
 export function topByMetric(rows: Row[], sort: SortKey, limit = 5) {
